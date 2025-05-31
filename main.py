@@ -34,7 +34,7 @@ def send_email(subject, body):
 
 def check_rooms():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=False)
         page = browser.new_page()
         page.goto("https://reserve.mcmenamins.com/mcmenamins/availability.asp", wait_until="networkidle")
 
