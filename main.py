@@ -36,10 +36,10 @@ def check_rooms():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-        page.goto("https://reserve.mcmenamins.com/mcmenamins/availability.asp")
+        page.goto("https://reserve.mcmenamins.com/mcmenamins/availability.asp", wait_until="networkidle")
 
-        # Wait for the location dropdown to be available
-        page.wait_for_selector("select[name='property']", timeout=10000)
+        # Wait for the location dropdown to be present in the DOM
+        page.wait_for_selector("select[name='property']", state="attached", timeout=20000)
         page.select_option("select[name='property']", label=LOCATION)
 
         # Set check-in and check-out dates
