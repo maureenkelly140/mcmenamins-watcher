@@ -38,7 +38,8 @@ def check_rooms():
         page = browser.new_page()
         page.goto("https://reserve.mcmenamins.com/mcmenamins/availability.asp")
 
-        # Set location
+        # Wait for the location dropdown to be available
+        page.wait_for_selector("select[name='property']", timeout=10000)
         page.select_option("select[name='property']", label=LOCATION)
 
         # Set check-in and check-out dates
