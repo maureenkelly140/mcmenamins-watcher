@@ -53,8 +53,9 @@ def check_rooms():
                 print("SCREENSHOT_BASE64_END")
             raise  # Re-raise the exception so the job still fails (for now)
         
-        page.select_option("select[name='hotelCode']", value="MMED")
-
+        page.click("a.sbSelector")
+        page.wait_for_selector("ul.sbOptions li >> text=Edgefield", timeout=5000)
+        page.click("ul.sbOptions li >> text=Edgefield")
 
         # Set check-in and check-out dates
         page.fill("input[name='arrival']", CHECKIN_DATE)
