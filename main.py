@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 from playwright.sync_api import sync_playwright
+import base64
 
 ROOM_KEYWORDS = [
     "Women's Hostel",
