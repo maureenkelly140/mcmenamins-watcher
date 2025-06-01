@@ -57,8 +57,11 @@ def check_rooms():
         page.wait_for_selector("ul.sbOptions li >> text=Edgefield", timeout=5000)
         page.click("ul.sbOptions li >> text=Edgefield")
 
-        # Set check-in and check-out dates
+        # Remove readonly and set check-in and check-out dates
+        page.eval_on_selector("input[name='arrival']", "el => el.removeAttribute('readonly')")
         page.fill("input[name='arrival']", CHECKIN_DATE)
+        
+        page.eval_on_selector("input[name='departure']", "el => el.removeAttribute('readonly')")
         page.fill("input[name='departure']", CHECKOUT_DATE)
 
         # Submit form
