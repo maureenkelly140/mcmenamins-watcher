@@ -38,9 +38,9 @@ def check_rooms():
         page = browser.new_page()
         page.goto("https://reserve.mcmenamins.com/mcmenamins/availability.asp", wait_until="networkidle")
 
-        # Wait for the location dropdown to be present in the DOM
+        # Wait for the correct dropdown and select location
         try:
-            page.wait_for_selector("select[name='property']", state="attached", timeout=20000)
+            page.wait_for_selector("select[name='hotelCode']", state="attached", timeout=20000)
         except Exception as e:
             print("WAIT FAILED:", e)
             page.screenshot(path="screenshot.png", full_page=True)
@@ -52,7 +52,9 @@ def check_rooms():
                 print(encoded)
                 print("SCREENSHOT_BASE64_END")
             raise  # Re-raise the exception so the job still fails (for now)
-        page.select_option("select[name='property']", label=LOCATION)
+        
+        page.select_option("select[name='hotelCode']", value="MMED")
+
 
         # Set check-in and check-out dates
         page.fill("input[name='arrival']", CHECKIN_DATE)
