@@ -58,9 +58,25 @@ def check_rooms():
         page.click("ul.sbOptions li >> text=Edgefield")
 
         # Remove readonly and set check-in and check-out dates
-        page.eval_on_selector("input[name='arrival']", "el => el.removeAttribute('readonly')")
-        page.fill("input[name='arrival']", CHECKIN_DATE)
-        
+        # Departure input field handling
+        try:
+            print("Waiting for departure input field...")
+            page.wait_for_selector("input[name='departure']", state="attached", timeout=20000)
+            print("Departure field found. Removing readonly...")
+            page.eval_on_selector("input[name='departure']", "el => el.removeAttribute('readonly')")
+            print("Filling departure date...")
+            page.fill("input[name='departure']", CHECKOUT_DATE)
+        except Exception as e:
+            print("Departure field error:", e)
+            page.screenshot(path="departure-error.png", full_page=True)
+            with open("departure-error.png", "rb") as f:
+                import base64
+                encoded = base64.b64encode(f.read()).decode('utf-8')
+                print("SCREENSHOT_BASE64_START")
+                print(encoded)
+                print("SCREENSHOT_BASE64_END")
+            raise
+
         page.eval_on_selector("input[name='departure']", "el => el.removeAttribute('readonly')")
         page.fill("input[name='departure']", CHECKOUT_DATE)
 
