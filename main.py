@@ -93,7 +93,21 @@ def check_rooms():
                 print("SCREENSHOT_BASE64_END")
             raise
 
+        # Wait a few seconds for results to load
+        page.wait_for_timeout(5000)  # 5 seconds
+        
+        # Take screenshot whether or not results show up
+        page.screenshot(path="after-search.png", full_page=True)
+        with open("after-search.png", "rb") as f:
+            import base64
+            encoded = base64.b64encode(f.read()).decode('utf-8')
+            print("RESULT_SCREENSHOT_BASE64_START")
+            print(encoded)
+            print("RESULT_SCREENSHOT_BASE64_END")
+        
+        # Try to wait for the results (this may still fail, but that's okay)
         page.wait_for_selector(".roomName", timeout=15000)
+
         room_names = page.locator(".roomName").all_inner_texts()
 
         browser.close()
