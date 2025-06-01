@@ -77,7 +77,21 @@ def check_rooms():
             raise
 
         # Submit form
-        page.click("input[type='submit']")
+        try:
+            print("Waiting for SEARCH button...")
+            page.wait_for_selector("a#tbtAv", state="visible", timeout=20000)
+            print("Clicking SEARCH button...")
+            page.click("a#tbtAv", timeout=10000, force=True)
+        except Exception as e:
+            print("SEARCH button click error:", e)
+            page.screenshot(path="submit-error.png", full_page=True)
+            with open("submit-error.png", "rb") as f:
+                import base64
+                encoded = base64.b64encode(f.read()).decode('utf-8')
+                print("SCREENSHOT_BASE64_START")
+                print(encoded)
+                print("SCREENSHOT_BASE64_END")
+            raise
 
         page.wait_for_selector(".roomName", timeout=15000)
         room_names = page.locator(".roomName").all_inner_texts()
