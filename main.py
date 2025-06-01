@@ -16,8 +16,8 @@ ROOM_KEYWORDS = [
     "Family Room w/common bath"
 ]
 
-CHECKIN_DATE = "09/19/2025"
-CHECKOUT_DATE = "09/20/2025"
+CHECKIN_DATE = "09/18/2025"
+CHECKOUT_DATE = "09/19/2025"
 LOCATION = "Edgefield"
 
 def send_email(subject, body):
