@@ -1,5 +1,5 @@
 services:
   - type: cron
     name: mcmenamins-room-checker
-    schedule: "*/30 * * * *"
     env: docker
+    schedule: "*/30 * * * *"
