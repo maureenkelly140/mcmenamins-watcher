@@ -39,7 +39,19 @@ def check_rooms():
         page.goto("https://reserve.mcmenamins.com/mcmenamins/availability.asp", wait_until="networkidle")
 
         # Wait for the location dropdown to be present in the DOM
-        page.wait_for_selector("select[name='property']", state="attached", timeout=20000)
+        try:
+            page.wait_for_selector("select[name='property']", state="attached", timeout=20000)
+        except Exception as e:
+            print("WAIT FAILED:", e)
+            page.screenshot(path="screenshot.png", full_page=True)
+        
+            import base64
+            with open("screenshot.png", "rb") as image_file:
+                encoded = base64.b64encode(image_file.read()).decode('utf-8')
+                print("SCREENSHOT_BASE64_START")
+                print(encoded)
+                print("SCREENSHOT_BASE64_END")
+            raise  # Re-raise the exception so the job still fails (for now)
         page.select_option("select[name='property']", label=LOCATION)
 
         # Set check-in and check-out dates
