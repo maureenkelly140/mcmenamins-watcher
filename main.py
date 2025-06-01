@@ -59,6 +59,24 @@ def check_rooms():
 
         # Remove readonly and set check-in and check-out dates
         try:
+            print("Waiting for arrival input field...")
+            page.wait_for_selector("input[name='startDate']", state="attached", timeout=20000)
+            print("Arrival field found. Removing readonly...")
+            page.eval_on_selector("input[name='startDate']", "el => el.removeAttribute('readonly')")
+            print("Filling arrival date...")
+            page.fill("input[name='startDate']", CHECKIN_DATE)
+        except Exception as e:
+            print("Arrival field error:", e)
+            page.screenshot(path="arrival-error.png", full_page=True)
+            with open("arrival-error.png", "rb") as f:
+                import base64
+                encoded = base64.b64encode(f.read()).decode('utf-8')
+                print("SCREENSHOT_BASE64_START")
+                print(encoded)
+                print("SCREENSHOT_BASE64_END")
+            raise
+            
+        try:
             print("Waiting for departure input field...")
             page.wait_for_selector("input[name='endDate']", state="attached", timeout=20000)
             print("Departure field found. Removing readonly...")
@@ -76,6 +94,14 @@ def check_rooms():
                 print("SCREENSHOT_BASE64_END")
             raise
 
+        # DEBUG: Log field values before search
+        print("Checking field values before submit...")
+        arrival_val = page.eval_on_selector("input[name='arrival']", "el => el.value")
+        departure_val = page.eval_on_selector("input[name='departure']", "el => el.value")
+        print("Arrival field value:", arrival_val)
+        print("Departure field value:", departure_val)
+        page.screenshot(path="before-submit.png", full_page=True)
+        
         # Submit form
         try:
             print("Waiting for SEARCH button...")
