@@ -123,27 +123,41 @@ def check_rooms():
 
         # Wait for either room results or "no availability" message
         try:
+            print("Waiting for room results or 'no availability' message...")
             page.wait_for_selector(".roomName, #noAvailabilityText", timeout=15000)
             page.wait_for_timeout(1000)  # Optional safety delay
+        
+            # Log whether elements were found
+            room_count = page.locator(".roomName").count()
+            no_avail_visible = page.is_visible("#noAvailabilityText")
+            print(f"Found {room_count} room elements.")
+            print(f"'No availability' message visible? {no_avail_visible}")
+        
+            # Get all inner texts from room elements (even if it's zero)
             room_names = page.locator(".roomName").all_inner_texts()
-        except Exception:
+            print("Room names extracted:", room_names)
+        
+        except Exception as e:
+            print("Room result wait error:", e)
             room_names = []
         
-        # Take screenshot *after* the results have loaded
+        # Always take screenshot of results area
         page.screenshot(path="after-search.png", full_page=True)
         with open("after-search.png", "rb") as f:
             encoded = base64.b64encode(f.read()).decode('utf-8')
             print("RESULT_SCREENSHOT_BASE64_START")
             print(encoded)
             print("RESULT_SCREENSHOT_BASE64_END")
-
-        browser.close()
-
+        
+        # Optional: Dump raw HTML from results section for inspection
+        try:
+            results_html = page.inner_html("#resultsContent")  # Adjust selector if needed
+            print("=== RESULTS HTML START ===")
+            print(results_html[:3000])  # Avoid overloading logs
+            print("=== RESULTS HTML END ===")
+        except Exception as e:
+            print("Couldn't get results HTML:", e)
+        
+        # Match rooms
         found = [room for room in room_names if any(k in room for k in ROOM_KEYWORDS)]
-
-        if found:
-            body = "Available room(s) found:\n" + "\n".join(found)
-            send_email("Room Availability Alert - McMenamins", body, attachment_path="after-search.png")
-
-if __name__ == "__main__":
-    check_rooms()
+        print("Matching room names:", found)
